@@ -6,12 +6,19 @@ interface AppProviderProps {
 }
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-    const { state, changeActivity } = useActivityManager();
+    const { state, changeActivity, reset, addActivity, removeActivity } = useActivityManager();
+
+    const resetApp = () => {
+        reset();
+    };
 
     return (
         <AppContext.Provider value={{
             ...state,
-            changeActivity
+            changeActivity,
+            addActivity,
+            removeActivity,
+            resetApp
         }}>
             {children}
         </AppContext.Provider>

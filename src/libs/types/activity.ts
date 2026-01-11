@@ -1,5 +1,5 @@
 
-export type ActivityId = number;
+export type ActivityId = string;
 export type ActivitySessionId = string;
 
 export interface Activity {

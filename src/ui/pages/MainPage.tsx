@@ -7,21 +7,30 @@ import { SumSessionActivityDisplay } from '../components/SumSessionActivityDispl
 import { Typography } from '../components/Typography';
 import { DefaultLayout } from './layouts/DefaultLayout';
 import { SettingsOverlay } from '../components/SettingsOverlay';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { cm } from '../../libs/utils/cm';
 import { isToday } from '../../libs/utils/date';
-import type { ActivitySession } from '../../libs/types/activity';
+import type { ActivityId, ActivitySessionId, TimedActivity } from '../../libs/types/activity';
 import { SessionOverlay } from '../components/SessionOverlay';
+import { formatDate, formatDuration } from '../../libs/utils/format';
+import { getActivity } from '../../libs/utils/getActivity';
 
 export const MainPage: React.FC = () => {
     const { activities, changeActivity, activeSession, activeActivity, dailySessions } = useApp();
     const [settingsOpen, setSettings] = useState<boolean>(false);
-    const [openSession, setOpenSession] = useState<ActivitySession | null>(null);
+    const [openSessionId, setOpenSessionId] = useState<ActivitySessionId | null>(null);
 
-    useEffect(() => {
-        if (openSession === null) return;
-        setOpenSession(dailySessions[openSession.id]);
-    }, [dailySessions]);
+    const allTimedActivities: TimedActivity[] = [];
+    Object.values(dailySessions).forEach(({ timedActivites }) => allTimedActivities.push(...timedActivites));
+    const activityDurations = allTimedActivities.reduce((acc, timed) => {
+        const activity = getActivity(timed.activityId, activities);
+        if (activity === null) return acc;
+        const duration = Math.max(timed.end.getTime() - timed.start.getTime(), 1);
+        acc[timed.activityId] = (acc[timed.activityId] || 0) + duration;
+        return acc;
+    }, {} as Record<ActivityId, number>);
+    activities.forEach((activity) => activityDurations[activity.id] = (activityDurations[activity.id] || 0));
+    const totalDuration = Object.values(activityDurations).reduce((a, b) => a + b, 0);
 
     return (
         <DefaultLayout>
@@ -46,20 +55,20 @@ export const MainPage: React.FC = () => {
                 </div>
             </div>
             <div className='w-full grow flex flex-row gap-4'>
-                <div className='grow grid grid-rows-3 grid-cols-1'>
-                    <div className='row-span-2 h-0 min-h-full overflow-auto'>
+                <div className='grow grid grid-rows-2 grid-cols-1'>
+                    <div className='h-0 min-h-full overflow-auto'>
                         {Object.keys(dailySessions).map((iso) => {
                             const date = new Date(iso);
                             const session = dailySessions[iso] ?? null;
 
                             const open = () => {
                                 if (session === null) return;
-                                setOpenSession(session);
+                                setOpenSessionId(session.id);
                             };
 
                             return (
                                 <Button
-                                    title={iso}
+                                    title={formatDate(iso)}
                                     onClick={open}
                                     size='auto'
                                     variant='ghost'
@@ -75,8 +84,13 @@ export const MainPage: React.FC = () => {
                         })}
                     </div>
                     <div>
-                        {activities.map((activity) => {
+                        {Object.entries(activityDurations).map(([activityId, duration]) => {
+                            const activity = getActivity(activityId, activities);
+                            if (activity === null) return;
+
+                            const space = totalDuration > 0 ? (duration / totalDuration) * 100 : 0;
                             const isSelected = activeActivity?.id === activity.id;
+
                             return (
                                 <div
                                     key={activity.id}
@@ -91,13 +105,16 @@ export const MainPage: React.FC = () => {
                                     <Button
                                         size='auto'
                                         variant='ghost'
-                                        className='size-full'
+                                        className='size-full flex flex-col'
                                         onClick={() => {
                                             changeActivity(activity.id)
                                         }}
                                     >
                                         <Typography size='lg'>
                                             {activity.name}
+                                        </Typography>
+                                        <Typography>
+                                            {formatDuration(duration)} | {space.toFixed(2)}%
                                         </Typography>
                                     </Button>
                                 </div>
@@ -119,8 +136,8 @@ export const MainPage: React.FC = () => {
             {settingsOpen &&
                 <SettingsOverlay close={() => setSettings(false)} />
             }
-            {openSession !== null &&
-                <SessionOverlay session={openSession} close={() => setOpenSession(null)} />
+            {openSessionId !== null &&
+                <SessionOverlay sessionId={openSessionId} close={() => setOpenSessionId(null)} />
             }
         </DefaultLayout >
     );

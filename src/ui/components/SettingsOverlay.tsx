@@ -11,14 +11,30 @@ interface SettingsOverlayProps {
 }
 
 export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({ close }) => {
-    const { activities } = useApp();
+    const { activities, addActivity, removeActivity, resetApp } = useApp();
 
-    const addActivity = () => {
-        console.log('addActivity');
+    const addActivityAction = () => {
+        const name = prompt('Pick a name');
+        if (!name || name.length === 0) return;
+
+        const color = prompt('Pick a color');
+        if (!color || color.length === 0) return;
+
+        addActivity({
+            id: '',
+            color: (color.startsWith('#') ? color : `#${color}`),
+            name: name
+        });
     };
 
-    const removeActivivy = (id: ActivityId) => {
-        console.log('removeActivivy', id);
+    const removeActivivyAction = (id: ActivityId) => {
+        removeActivity(id);
+    };
+
+    const resetAppAction = () => {
+        const yes = confirm('Reset?');
+        if (!yes) return;
+        resetApp();
     };
 
     return (
@@ -32,6 +48,9 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({ close }) => {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div>
+                        <Typography size='5xl' className='float-left'>
+                            Settings
+                        </Typography>
                         <Button
                             className='float-end'
                             variant='ghost'
@@ -41,43 +60,63 @@ export const SettingsOverlay: React.FC<SettingsOverlayProps> = ({ close }) => {
                         </Button>
                     </div>
                     <div className='grow overflow-y-auto px-4'>
-                        <Button
-                            variant='outline'
-                            size='lg'
-                            className='mb-4 w-full'
-                            onClick={addActivity}
-                        >
-                            <Typography size='lg'>
-                                Add
-                            </Typography>
-                        </Button>
-                        {activities.map((activity) => {
-                            return (
-                                <div
-                                    key={activity.id}
-                                    className='flex gap-4 mb-4'
-                                >
+                        <Typography size='4xl' className='text-center'>
+                            Activities
+                        </Typography>
+                        <div>
+                            <Button
+                                variant='outline'
+                                size='lg'
+                                className='mb-4 w-full'
+                                onClick={addActivityAction}
+                            >
+                                <Typography size='lg'>
+                                    Add
+                                </Typography>
+                            </Button>
+                            {activities.map((activity) => {
+                                return (
                                     <div
-                                        className='p-4 rounded-border grow'
-                                        style={{
-                                            backgroundColor: activity.color
-                                        }}
+                                        key={activity.id}
+                                        className='flex gap-4 mb-4'
                                     >
-                                        <Typography size='lg'>
-                                            {activity.name}
-                                        </Typography>
+                                        <div
+                                            className='p-4 rounded-border grow'
+                                            style={{
+                                                backgroundColor: activity.color
+                                            }}
+                                        >
+                                            <Typography size='lg'>
+                                                {activity.name}
+                                            </Typography>
+                                        </div>
+                                        <Button
+                                            size='auto'
+                                            variant='accent'
+                                            className='w-16 p-2'
+                                            onClick={() => removeActivivyAction(activity.id)}
+                                        >
+                                            <TrashIcon className='size-full' />
+                                        </Button>
                                     </div>
-                                    <Button
-                                        size='auto'
-                                        variant='accent'
-                                        className='w-16 p-2'
-                                        onClick={() => removeActivivy(activity.id)}
-                                    >
-                                        <TrashIcon className='size-full' />
-                                    </Button>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
+                        <Typography size='4xl' className='text-center'>
+                            App
+                        </Typography>
+                        <div className='flex flex-col gap-0 mt-2'>
+                            <Button
+                                variant='accent'
+                                size='lg'
+                                className='w-full'
+                                onClick={resetAppAction}
+                            >
+                                <Typography size='lg'>
+                                    Reset
+                                </Typography>
+                            </Button>
+                        </div>
                     </div>
                 </Card>
             </DefaultLayout>

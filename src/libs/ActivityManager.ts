@@ -1,11 +1,11 @@
-import type { Activity, ActivityId, ActivitySession } from "./types/activity";
-import { addTime, getToday, isAfter } from "./utils/date";
+import type { Activity, ActivityId, ActivitySession } from './types/activity';
+import { addTime, getToday, isAfter } from './utils/date';
 
 export interface ActivityManagerState {
     activities: Activity[];
     activeActivity: Activity | null;
     activeSession: ActivitySession | null;
-    dailySessions: Record<string, ActivitySession | null>;
+    dailySessions: Record<string, ActivitySession>;
 }
 
 type Listener = (state: ActivityManagerState) => void;
@@ -40,6 +40,29 @@ export class ActivityManager {
         }
     }
 
+    addActivity(activityData: Omit<Activity, 'id'>) {
+        const newActivity: Activity = {
+            ...activityData,
+            id: crypto.randomUUID() as ActivityId
+        };
+        this.state = {
+            ...this.state,
+            activities: [...this.state.activities, newActivity]
+        };
+        this.emit();
+        return newActivity;
+    }
+
+    removeActivity(id: ActivityId) {
+        const isCurrentlyActive = this.state.activeActivity?.id === id;
+        this.state = {
+            ...this.state,
+            activities: this.state.activities.filter(a => a.id !== id),
+            activeActivity: isCurrentlyActive ? this.state.activities[0] : this.state.activeActivity
+        };
+        this.emit();
+    }
+
     changeActivity(id: ActivityId) {
         const activity = this.state.activities.find(a => a.id === id);
         if (activity) {
@@ -49,7 +72,8 @@ export class ActivityManager {
     }
 
     private tick(ms: number) {
-        let { activeActivity, activeSession, dailySessions } = this.state;
+        const { activeActivity, dailySessions } = this.state;
+        let { activeSession } = this.state;
         if (!activeActivity) return;
 
         if (!activeSession) {

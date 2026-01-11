@@ -2,16 +2,21 @@ import { DefaultLayout } from '../pages/layouts/DefaultLayout';
 import { Card } from './Card';
 import { Button } from './Button';
 import { XIcon } from '@phosphor-icons/react';
-import type { ActivitySession } from '../../libs/types/activity';
+import type { ActivitySessionId } from '../../libs/types/activity';
 import { SessionActivityDisplay } from './SessionActivityDisplay';
 import { SumSessionActivityDisplay } from './SumSessionActivityDisplay';
+import { useApp } from '../../libs/hooks/useApp';
+import { Typography } from './Typography';
+import { formatDate } from '../../libs/utils/format';
 
 interface SessionOverlayProps {
     close: () => void;
-    session: ActivitySession;
+    sessionId: ActivitySessionId;
 }
 
-export const SessionOverlay: React.FC<SessionOverlayProps> = ({ close, session }) => {
+export const SessionOverlay: React.FC<SessionOverlayProps> = ({ close, sessionId }) => {
+    const { dailySessions } = useApp();
+    const session = dailySessions[sessionId];
     return (
         <div
             onClick={close}
@@ -23,6 +28,9 @@ export const SessionOverlay: React.FC<SessionOverlayProps> = ({ close, session }
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div>
+                        <Typography size='5xl' className='float-left'>
+                            Session {formatDate(session.id)}
+                        </Typography>
                         <Button
                             className='float-end'
                             variant='ghost'
