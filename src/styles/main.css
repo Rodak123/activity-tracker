@@ -1,0 +1,7 @@
+@import "./theme.css";
+
+@layer components {
+    .card {
+        @apply p-4 border border-ui-border rounded-border bg-bg-100;
+    }
+}

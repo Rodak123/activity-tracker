@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+@theme {
+    --color-text-50: #0d0d0d;
+    --color-text-100: #1a1a1a;
+    --color-text-200: #333333;
+    --color-text-300: #4d4d4d;
+    --color-text-400: #666666;
+    --color-text-500: #808080;
+    --color-text-600: #999999;
+    --color-text-700: #b3b3b3;
+    --color-text-800: #cccccc;
+    --color-text-900: #e6e6e6;
+    --color-text-950: #f2f2f2;
+
+    --color-bg-50: #0d1117;
+    --color-bg-100: #161b22;
+    --color-bg-200: #253041;
+    --color-bg-300: #374862;
+    --color-bg-400: #496083;
+    --color-bg-500: #5c78a3;
+    --color-bg-600: #7c93b6;
+    --color-bg-700: #9daec8;
+    --color-bg-800: #bec9da;
+    --color-bg-900: #dee4ed;
+    --color-bg-950: #eff2f6;
+
+    --color-primary-50: #010c18;
+    --color-primary-100: #021831;
+    --color-primary-200: #043062;
+    --color-primary-300: #064893;
+    --color-primary-400: #0860c4;
+    --color-primary-500: #2f81f7;
+    --color-primary-600: #1f6feb;
+    --color-primary-700: #6caef9;
+    --color-primary-800: #9dc9fb;
+    --color-primary-900: #cee4fd;
+    --color-primary-950: #e7f1fe;
+
+    --color-secondary-50: #180920;
+    --color-secondary-100: #2e103f;
+    --color-secondary-200: #4a1d66;
+    --color-secondary-300: #692990;
+    --color-secondary-400: #8a38bd;
+    --color-secondary-500: #a855f7;
+    --color-secondary-600: #9333ea;
+    --color-secondary-700: #c084fc;
+    --color-secondary-800: #d8b4fe;
+    --color-secondary-900: #f3e8ff;
+    --color-secondary-950: #faf5ff;
+
+    --color-accent-50: #1f060a;
+    --color-accent-100: #3f0d16;
+    --color-accent-200: #661424;
+    --color-accent-300: #901b32;
+    --color-accent-400: #bc2341;
+    --color-accent-500: #f43f5e;
+    --color-accent-600: #e11d48;
+    --color-accent-700: #fb7185;
+    --color-accent-800: #fecdd3;
+    --color-accent-900: #ffe4e6;
+    --color-accent-950: #fff1f2;
+
+    --radius-border: 6px;
+
+    --color-ui-bg: var(--color-bg-50);
+    --color-ui-text: var(--color-text-950);
+    --color-ui-border: #30363d;
+}
+
+@layer base {
+
+    .light,
+    [data-theme="light"] {
+        --color-text-50: #f2f2f2;
+        --color-text-100: #e6e6e6;
+        --color-text-200: #cccccc;
+        --color-text-300: #b3b3b3;
+        --color-text-400: #999999;
+        --color-text-500: #808080;
+        --color-text-600: #666666;
+        --color-text-700: #4d4d4d;
+        --color-text-800: #333333;
+        --color-text-900: #1a1a1a;
+        --color-text-950: #0d0d0d;
+
+        --color-bg-50: #ffffff;
+        --color-bg-100: #f6f8fa;
+        --color-bg-200: #dee4ed;
+        --color-bg-300: #bec9da;
+        --color-bg-400: #9daec8;
+        --color-bg-500: #5c78a3;
+        --color-bg-600: #496083;
+        --color-bg-700: #374862;
+        --color-bg-800: #253041;
+        --color-bg-900: #121821;
+        --color-bg-950: #090c10;
+
+        --color-primary-50: #e7f1fe;
+        --color-primary-100: #cee4fd;
+        --color-primary-200: #9dc9fb;
+        --color-primary-300: #6caef9;
+        --color-primary-400: #3b93f7;
+        --color-primary-500: #0969da;
+        --color-primary-600: #0550ae;
+        --color-primary-700: #064893;
+        --color-primary-800: #043062;
+        --color-primary-900: #021831;
+        --color-primary-950: #010c18;
+
+        --color-secondary-50: #faf5ff;
+        --color-secondary-100: #f3e8ff;
+        --color-secondary-200: #e9d5ff;
+        --color-secondary-300: #d8b4fe;
+        --color-secondary-400: #c084fc;
+        --color-secondary-500: #9333ea;
+        --color-secondary-600: #7e22ce;
+        --color-secondary-700: #6b21a8;
+        --color-secondary-800: #581c87;
+        --color-secondary-900: #3b0764;
+        --color-secondary-950: #180920;
+
+        --color-accent-50: #fff1f2;
+        --color-accent-100: #ffe4e6;
+        --color-accent-200: #fecdd3;
+        --color-accent-300: #fda4af;
+        --color-accent-400: #fb7185;
+        --color-accent-500: #e11d48;
+        --color-accent-600: #be123c;
+        --color-accent-700: #9f1239;
+        --color-accent-800: #881337;
+        --color-accent-900: #4c0519;
+        --color-accent-950: #1f060a;
+
+        --color-ui-border: #d0d7de;
+        --color-ui-bg: var(--color-bg-50);
+        --color-ui-text: var(--color-text-950);
+    }
+
+    body {
+        @apply bg-ui-bg text-ui-text antialiased transition-colors duration-200;
+    }
+}
